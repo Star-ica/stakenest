@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="theme-stake">
 <header class="top">
   <div class="brand">
     <div class="logo-mark">⬡</div>
@@ -18,25 +18,64 @@
       <p id="tagline">Stake BOT, earn a fixed APR, withdraw any time.</p>
     </div>
   </div>
+  <nav class="topnav">
+    <a href="#how">How it works</a>
+    <a href="#app">App</a>
+  </nav>
   <div class="wallet">
     <span id="netBadge" class="badge">Not connected</span>
     <button id="connectBtn" class="btn primary" type="button">Connect wallet</button>
   </div>
 </header>
-<main>
-  <section class="stats" id="stats" aria-label="Live numbers"></section>
-  <div class="panels">
-    <div>
-      <p class="sec">Actions</p>
-      <section class="grid" id="actions"></section>
-    </div>
-    <div>
-      <p class="sec">Lookups</p>
-      <section class="grid" id="views"></section>
+
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">Live on BOT Chain · Chain ID 677</span>
+    <h2>Let your BOT<br><span class="grad">grow in the nest.</span></h2>
+    <p class="lead">Stake BOT, earn a fixed APR and withdraw whenever you want. No lockups, no surprises.</p>
+    <div class="hero-cta">
+      <button id="heroConnect" class="btn primary lg" type="button">Start staking</button>
+      <a class="btn ghost lg" href="#app">Open app →</a>
     </div>
   </div>
-  <section class="card" id="tokens"></section>
+  <div class="hero-visual" aria-hidden="true">
+    <div class="orb"><span>⬡</span></div>
+    <div class="chip chip-a">Fixed APR</div>
+    <div class="chip chip-b">No lock</div>
+  </div>
+  <div class="hero-stats">
+    <p class="sec">Live staking numbers</p>
+    <section class="stats" id="stats" aria-label="Live numbers"></section>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="step"><b>1</b><h3>Connect</h3><p>Use any EVM wallet on BOT Chain mainnet.</p></div>
+  <div class="step"><b>2</b><h3>Stake BOT</h3><p>Choose an amount — rewards start accruing right away.</p></div>
+  <div class="step"><b>3</b><h3>Claim or withdraw</h3><p>Take rewards or your full stake out any time.</p></div>
+</section>
+
+<section class="features">
+  <div><h4>Fixed APR</h4><p>A predictable rate set in the contract, not a moving target.</p></div>
+  <div><h4>Withdraw any time</h4><p>No lock periods or exit penalties.</p></div>
+  <div><h4>Fully on-chain</h4><p>Verify every stake and reward on BOT Chain Scan.</p></div>
+</section>
+
+<main class="app" id="app">
+  <aside class="side">
+    <p class="sec">Your stake &amp; tokens</p>
+    <section class="card" id="tokens"></section>
+  </aside>
+  <div class="workspace">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-pane="pane-actions" type="button">Actions</button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="pane-views" type="button">Lookups</button>
+    </div>
+    <div class="pane" id="pane-actions"><section class="grid" id="actions"></section></div>
+    <div class="pane" id="pane-views" hidden><section class="grid" id="views"></section></div>
+  </div>
 </main>
+
 <div class="status" id="status" role="status" aria-live="polite"></div>
 <footer class="foot">
   <span>BOT Chain Mainnet · Chain ID 677</span>
@@ -49,5 +88,26 @@
 <script src="config.js"></script>
 <script src="artifacts.js"></script>
 <script src="app.js"></script>
+<script>
+(function () {
+  var tabs = document.querySelectorAll('.tab');
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () {
+      tabs.forEach(function (x) { x.setAttribute('aria-selected', x === t); });
+      document.querySelectorAll('.pane').forEach(function (p) { p.hidden = p.id !== t.dataset.pane; });
+    });
+  });
+  document.getElementById('heroConnect').addEventListener('click', function () {
+    document.getElementById('connectBtn').click();
+  });
+  var badge = document.getElementById('netBadge'), jumped = false;
+  new MutationObserver(function () {
+    var on = !/not connected/i.test(badge.textContent);
+    document.body.classList.toggle('is-connected', on);
+    if (on && !jumped) { jumped = true; document.getElementById('app').scrollIntoView({ behavior: 'smooth' }); }
+    if (!on) jumped = false;
+  }).observe(badge, { childList: true, characterData: true, subtree: true });
+})();
+</script>
 </body>
 </html>
